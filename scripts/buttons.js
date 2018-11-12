@@ -33,7 +33,7 @@ const createNewButton = (x,y,width,height,action,text,textX,textY,btnName) =>{
 
 export const initializeButtons = () =>{
     //shop
-    createNewButton(775,500,350,100,()=>{},'player interaction',795,563,'shop');
+    createNewButton(775,500,350,100,()=>{/*open menu*/},'player interaction',795,563,'shop');
     //createNewButton(100,500,110,100,()=>{},'boot');
 }
 export const activeButtons = () =>{
@@ -50,13 +50,20 @@ export const activeButtons = () =>{
 }
 export const updateButtonHover = (mouse,activeBtn) =>{
     for(let i=0; i<activeBtn.length; i++){
-        if(activeBtn[i].x<mouse.x<(activeBtn[i].x+activeBtn[i].width)){
-            if(activeBtn[i].y<mouse.y<(activeBtn[i].y+activeBtn[i].height)){
-                if(activeBtn[i].hover){
-                    activeBtn[i].setHover(false);
-                }else{
+        let currentBtn = activeBtn[i];
+        if(currentBtn.x<mouse.x && mouse.x<(currentBtn.x+currentBtn.width)){
+            if(currentBtn.y<mouse.y && mouse.y<(currentBtn.y+currentBtn.height)){
+                if(!currentBtn.hover){
                     activeBtn[i].setHover(true);
                 }
+            }else{
+                if(currentBtn.hover){
+                    activeBtn[i].setHover(false);
+                }
+            }
+        }else{
+            if(currentBtn.hover){
+                activeBtn[i].setHover(false);
             }
         }
     }
@@ -64,31 +71,35 @@ export const updateButtonHover = (mouse,activeBtn) =>{
 export const drawButtons = (activeBtn, ctx) =>{
     
     activeBtn.forEach((e)=>{
+        if(!e.hover){
         ctx.fillStyle='#000';
         ctx.fillRect(e.x,e.y,e.width,e.height);
         ctx.fillStyle='#996633';
         ctx.fillText(e.text,e.textX,e.textY);
         ctx.strokeStyle = '#996633';
         ctx.strokeRect(e.x,e.y,e.width,e.height);
+        }else{
+        ctx.fillStyle='#777';
+        ctx.fillRect(e.x,e.y,e.width,e.height);
+        ctx.fillStyle='#996633';
+        ctx.fillText(e.text,e.textX,e.textY);
+        ctx.strokeStyle = '#996633';
+        ctx.strokeRect(e.x,e.y,e.width,e.height);
+        }
     })
 }
 
-export const clickButtons = (xPos,yPos) =>{
-    let keys  = Object.keys(allButtons);
-
-    for(let i=0;i<keys.length;i++){
-        let btn = allButtons[keys[i]];
-        // if the button is not active ignore it.
-        if(btn.active ==true){
+export const clickButtons = (mouse, activeBtn) =>{
+    
+for(let i=0;i<activeBtn.length;i++){
+    let btn = activeBtn[i];
             //if the mouse position isn't within the width button ignore it
-            if(btn.x<xPos<(btn.x+btn.width)){
+        if(btn.x<mouse.x && mouse.x<(btn.x+btn.width)){
                 //if the mosue position is within the height of the button it is a hit on the button, preform buttons action
-                if(btn.y<yPos<(btn.y+btn.height)){
-                    console.dir(btn.text);
-                    //btn.action();
-                    return;
-                }
+            if(btn.y<mouse.y && mouse.y<(btn.y+btn.height)){
+                btn.action();
+                return;
             }
-        }      
-    }
+        }
+    }      
 }

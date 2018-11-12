@@ -14,14 +14,18 @@ const init = () =>{
     //draw the game screen
     initializeButtons();
     //setup event listeners
-    canvas.addEventListener('mouseMove',()=>{
-        mouse = getMousePos();
-        updateButtonHover(mouse,activeButtons);
+    canvas.addEventListener('mousemove',(e)=>{
+        let mouse = getMousePos(canvas, e);
+        updateButtonHover(mouse, activeButtons());
+    },false);
+    canvas.addEventListener('click',(e)=>{
+        let mouse = getMousePos(canvas, e);
+        clickButtons(mouse, activeButtons());
     },false);
     requestAnimationFrame(main);
 }
 const getMousePos = (canvas,e) =>{
-    canvasBound = canvas.getBoundingClientRect();
+    let canvasBound = canvas.getBoundingClientRect();
     return{
         x: e.clientX - canvasBound.left,
         y: e.clientY - canvasBound.top
